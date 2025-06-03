@@ -1,5 +1,3 @@
-<!--ESSE JA TEM O MODAL PARA INSERIR OS ITENS DIRETAMENTE NO PEDIDOS E COM PEDIDOS EM ATRASO SLIDERBAR DOS RELATORIOS APARECE SO DEPOIS DO LOGIN E PAGINA COM LOGIN SE ATUALIZAR.HTML-->
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -897,6 +895,17 @@
       color: #333;
     }
 
+    .table-responsive {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .table-responsive img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+    }
+
     @media print {
       body * {
         visibility: hidden;
@@ -1002,23 +1011,20 @@
 <body>
   <div class="overlay"></div>
   
-  <div class="sidebar" id="sidebar" style="display: none;"> <!--SLIDEBAR LATERAL ASSIM ELE FICA OCULTO, MAS NA FUNÇÃO verificarSenha() ele aparece apos a senha inserida -->
+  <div class="sidebar" id="sidebar" style="display: none;">
     <div class="sidebar-header">
       <div class="logo">
-       <img src="https://i.ibb.co/ccnPx5ym/Chat-GPT-Image-3-de-jun-de-2025-12-21-02-Photoroom.png" alt="VaptVupt Deliver Logo" style="max-width: 200px; height: auto;"> <!--LOGO CANTO SUPERIOR ESQUERDO-->
+       <img src="https://i.ibb.co/xSQgyyVf/UMA-LOGO-ANIMADA-para-um-app-de-delivery-de-fast-food-que-se-chama-Vapt-Vupt-1-Photoroom.png" alt="VaptVupt Deliver Logo" style="max-width: 200px; height: auto;">
       </div>
     </div>
     <ul class="sidebar-menu">
       <li><a href="#" class="active"><i class="fas fa-box"></i> Pedidos</a></li>
-      <!--<li><a href="#" onclick="abrirRelatorioLogin()"><i class="fas fa-chart-line"></i> Relatórios</a> -->
-        <li><a href="#" onclick="document.getElementById('relatorioModal').style.display = 'block'"><i class="fas fa-chart-line"></i> Faturamento por Período</a></li> <!--PULA A VALIDAÇÃO DE SENHA-->
-          <li><a href="#" onclick="abrirRelatorioProdutosMaisVendidos()"><i class="fas fa-star"></i> Produtos Mais Vendidos</a></li>
-  <li><a href="#" onclick="abrirRelatorioFaturamentoDetalhado()"><i class="fas fa-calendar-alt"></i> Faturamento Dia/Mês/Semana</a></li>
-  <li><a href="#" onclick="abrirRelatorioRankingClientes()"><i class="fas fa-users"></i> Ranking de Clientes</a></li>
-<ul class="sidebar-submenu" style="padding-left: 20px;">
-</ul>
-</li>
-      <li><a href="#" onclick="abrirModalInserirProduto()"><i class="fas fa-cog"></i> Configurações</a></li>
+      <li><a href="#" onclick="document.getElementById('relatorioModal').style.display = 'block'"><i class="fas fa-chart-line"></i> Faturamento por Período</a></li>
+      <li><a href="#" onclick="abrirRelatorioProdutosMaisVendidos()"><i class="fas fa-star"></i> Produtos Mais Vendidos</a></li>
+      <li><a href="#" onclick="abrirRelatorioFaturamentoDetalhado()"><i class="fas fa-calendar-alt"></i> Faturamento Dia/Mês/Semana</a></li>
+      <li><a href="#" onclick="abrirRelatorioRankingClientes()"><i class="fas fa-users"></i> Ranking de Clientes</a></li>
+      <li><a href="#" onclick="abrirGerenciamentoProdutos()"><i class="fas fa-box-open"></i> Gerenciar Produtos</a></li>
+      <li><a href="#" onclick="abrirModalInserirProduto()"><i class="fas fa-cog"></i> Adicionar Produtos</a></li>
       <li><a href="#"><i class="fas fa-user"></i> Perfil</a></li>
     </ul>
   </div>
@@ -1027,6 +1033,7 @@
     <ul class="mobile-nav-menu">
       <li><a href="#" class="active"><i class="fas fa-box"></i><span>Pedidos</span></a></li>
       <li><a href="#" onclick="requestReportAccess('faturamentoPeriodo')"><i class="fas fa-chart-line"></i><span>Relatórios</span></a></li>
+      <li><a href="#" onclick="abrirGerenciamentoProdutos()"><i class="fas fa-box-open"></i><span>Produtos</span></a></li>
       <li><a href="#"><i class="fas fa-cog"></i><span>Config</span></a></li>
       <li><a href="#"><i class="fas fa-user"></i><span>Perfil</span></a></li>
     </ul>
@@ -1038,22 +1045,22 @@
   </div>
   
   <div class="container login-container" id="loginForm" style="display: flex;">
-  <div class="login-card">
-    <h2>Login Admin</h2>
-    <form onsubmit="event.preventDefault(); realizarLogin();">
-      <div class="input-group">
-        <label for="emailInput">E-mail</label>
-        <input type="email" id="emailInput" required />
-      </div>
-      <div class="input-group">
-        <label for="senhaInput">Senha</label>
-        <input type="password" id="senhaInput" required />
-      </div>
-      <button type="submit" class="btn btn-block">Entrar</button>
-      <p class="error-message" id="mensagemErro">Credenciais inválidas!</p>
-    </form>
+    <div class="login-card">
+      <h2>Login Admin</h2>
+      <form onsubmit="event.preventDefault(); realizarLogin();">
+        <div class="input-group">
+          <label for="emailInput">E-mail</label>
+          <input type="email" id="emailInput" required />
+        </div>
+        <div class="input-group">
+          <label for="senhaInput">Senha</label>
+          <input type="password" id="senhaInput" required />
+        </div>
+        <button type="submit" class="btn btn-block">Entrar</button>
+        <p class="error-message" id="mensagemErro">Credenciais inválidas!</p>
+      </form>
+    </div>
   </div>
-</div>
 
   <div class="container dashboard" id="painelPedidos">
     <div class="header">
@@ -1063,15 +1070,13 @@
         </button>
         <div class="logo">
           <i class="fas fa-utensils"></i>
-          <h1>Boteco do Cassim</h1>
+          <h1>Painel Administrativo <h1>
         </div>
       </div>
       <div style="display: flex; align-items: center; gap: 15px;">
-        
-<button class="btn btn-outline" onclick="logout()">
-  <i class="fas fa-sign-out-alt"></i> Sair
-</button>
-
+        <button class="btn btn-outline" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
       </div>
     </div>
 
@@ -1141,7 +1146,6 @@
         </div>
       </div>
 
-   <!--INICIA O DASHBOARD DE PEDIDOS EM ATRASO-->   
       <div class="late-orders-dashboard">
         <h3>Pedidos em Atraso</h3>
         <div class="late-orders-table-container">
@@ -1171,23 +1175,7 @@
     </div>
   </div>
 
-    <div class="orders-container">
-      <div class="orders-header">
-        <h2>Pedidos Recentes</h2>
-        <div class="tabs">
-          <div class="tab active" onclick="filterOrders('all')">Todos</div>
-          <div class="tab" onclick="filterOrders('pending')">Pendentes</div>
-          <div class="tab" onclick="filterOrders('preparing')">Preparando</div>
-          <div class="tab" onclick="filterOrders('delivery')">Entrega</div>
-          <div class="tab" onclick="filterOrders('completed')">Concluídos</div>
-        </div>
-      </div>
-      
-      <ul class="order-list" id="listaPedidos">
-      </ul>
-    </div>
-  </div>
-
+  <!-- Modal de Relatório -->
   <div id="relatorioLoginModal" class="modal" style="display: none;">
     <div class="modal-content">
       <span class="close-modal" onclick="fecharModal('relatorioLoginModal')">&times;</span>
@@ -1248,7 +1236,7 @@
       
       <div id="relatorioResultado" style="margin-top: 20px; display: none;">
         <div class="relatorio-header">
-          <h3>Boteco do Cassim - Relatório de Faturamento</h3>
+          <h3>Relatório de Faturamento</h3>
           <p id="periodoRelatorio"></p>
         </div>
         
@@ -1289,6 +1277,118 @@
     </div>
   </div>
 
+  <!-- Modal de Gerenciamento de Produtos -->
+  <div id="modalGerenciamentoProdutos" class="modal" style="display: none;">
+    <div class="modal-content large">
+      <span class="close-modal" onclick="fecharModal('modalGerenciamentoProdutos')">&times;</span>
+      <h2>Gerenciamento de Produtos</h2>
+      
+      <div class="filter-group">
+        <div class="input-group">
+          <label for="filtroCategoria">Filtrar por Categoria:</label>
+          <select id="filtroCategoria" class="input-group input" onchange="carregarProdutos()">
+            <option value="todas">Todas as Categorias</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="relatorio-table">
+          <thead>
+            <tr>
+              <th>Imagem</th>
+              <th>Nome</th>
+              <th>Categoria</th>
+              <th>Preço</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaProdutos">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Edição de Produto -->
+  <div id="modalEditarProduto" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="fecharModal('modalEditarProduto')">&times;</span>
+      <h2>Editar Produto</h2>
+      <form id="formEditarProduto">
+        <input type="hidden" id="produtoIdEditar">
+        <input type="hidden" id="produtoCategoriaOriginal">
+        
+        <div class="input-group">
+          <label for="produtoNomeEditar">Nome do Produto</label>
+          <input type="text" id="produtoNomeEditar" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="produtoPrecoEditar">Preço (R$)</label>
+          <input type="number" step="0.01" id="produtoPrecoEditar" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="produtoImagemEditar">URL da Imagem</label>
+          <input type="url" id="produtoImagemEditar" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="produtoCategoriaEditar">Categoria</label>
+          <input type="text" id="produtoCategoriaEditar" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="produtoAtivoEditar">
+            <input type="checkbox" id="produtoAtivoEditar">
+            Produto ativo (visível para clientes)
+          </label>
+        </div>
+        
+        <button type="submit" class="btn btn-block">Salvar Alterações</button>
+        <button type="button" class="btn btn-outline btn-block" onclick="confirmarExclusaoProduto()">
+          <i class="fas fa-trash"></i> Excluir Produto
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de Inserção de Produto -->
+  <div id="modalInserirProduto" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="fecharModal('modalInserirProduto')">&times;</span>
+      <h2>Inserir Novo Produto</h2>
+      <form id="formNovoProduto">
+        <div class="input-group">
+          <label for="produtoNome">Nome do Produto</label>
+          <input type="text" id="produtoNome" required>
+        </div>
+        <div class="input-group">
+          <label for="produtoPreco">Preço (R$)</label>
+          <input type="number" step="0.01" id="produtoPreco" required>
+        </div>
+        <div class="input-group">
+          <label for="produtoImagem">URL da Imagem</label>
+          <input type="url" id="produtoImagem" required>
+        </div>
+        <div class="input-group">
+          <label for="produtoCategoria">Categoria</label>
+          <input type="text" id="produtoCategoria" required>
+        </div>
+        <div class="input-group">
+          <label for="produtoAtivo">
+            <input type="checkbox" id="produtoAtivo" checked>
+            Produto ativo (visível para clientes)
+          </label>
+        </div>
+        <button type="submit" class="btn btn-block">Adicionar Produto</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de Impressão Cozinha -->
   <div id="cozinhaPrintModal" class="print-modal">
     <div class="print-content">
       <div class="print-header">
@@ -1307,10 +1407,11 @@
     </div>
   </div>
 
+  <!-- Modal de Impressão Entrega -->
   <div id="entregaPrintModal" class="print-modal">
     <div class="print-content">
       <div class="print-header">
-        <h1>Boteco do Cassim</h1>
+        <h1>Painel Administrativo</h1>
         <p id="entregaPedidoInfo"></p>
       </div>
       <div id="entregaPedidoItens"></div>
@@ -1327,6 +1428,7 @@
     </div>
   </div>
 
+  <!-- Modal de Produtos Mais Vendidos -->
   <div id="modalProdutosMaisVendidos" class="modal" style="display: none;">
     <div class="modal-content large">
       <span class="close-modal" onclick="fecharModal('modalProdutosMaisVendidos')">&times;</span>
@@ -1348,6 +1450,7 @@
     </div>
   </div>
 
+  <!-- Modal de Faturamento Detalhado -->
   <div id="modalFaturamentoDetalhado" class="modal" style="display: none;">
     <div class="modal-content large">
       <span class="close-modal" onclick="fecharModal('modalFaturamentoDetalhado')">&times;</span>
@@ -1371,6 +1474,7 @@
     </div>
   </div>
 
+  <!-- Modal de Ranking de Clientes -->
   <div id="modalRankingClientes" class="modal" style="display: none;">
     <div class="modal-content large">
       <span class="close-modal" onclick="fecharModal('modalRankingClientes')">&times;</span>
@@ -1418,12 +1522,10 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    
     let allOrders = [];
     let pedidosAnteriores = [];
     let faturamentoChart, statusChart, relatorioChart;
     let currentOrderId = null;
-   
 
     function initCharts() {
       const ctxFaturamento = document.getElementById('faturamentoChart').getContext('2d');
@@ -1508,9 +1610,186 @@
       });
     }
 
+    // Funções para gerenciamento de produtos
+    function abrirGerenciamentoProdutos() {
+      document.getElementById('modalGerenciamentoProdutos').style.display = 'block';
+      carregarCategorias();
+      carregarProdutos();
+    }
+
+    function carregarCategorias() {
+      const select = document.getElementById('filtroCategoria');
+      select.innerHTML = '<option value="todas">Todas as Categorias</option>';
+      
+      database.ref('produtos').once('value').then(snapshot => {
+        snapshot.forEach(categoriaSnapshot => {
+          const option = document.createElement('option');
+          option.value = categoriaSnapshot.key;
+          option.textContent = categoriaSnapshot.key;
+          select.appendChild(option);
+        });
+      });
+    }
+
+    function carregarProdutos() {
+      const categoria = document.getElementById('filtroCategoria').value;
+      const tabela = document.getElementById('tabelaProdutos');
+      tabela.innerHTML = '<tr><td colspan="6" style="text-align: center;">Carregando produtos...</td></tr>';
+      
+      let ref = database.ref('produtos');
+      if (categoria !== 'todas') {
+        ref = ref.child(categoria);
+      }
+      
+      ref.once('value').then(snapshot => {
+        tabela.innerHTML = '';
+        
+        if (!snapshot.exists()) {
+          tabela.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhum produto encontrado</td></tr>';
+          return;
+        }
+        
+        snapshot.forEach(categoriaSnapshot => {
+          if (categoria === 'todas') {
+            categoriaSnapshot.forEach(produtoSnapshot => {
+              adicionarProdutoNaTabela(produtoSnapshot, categoriaSnapshot.key);
+            });
+          } else {
+            adicionarProdutoNaTabela(categoriaSnapshot, categoria);
+          }
+        });
+      });
+    }
+
+    function adicionarProdutoNaTabela(produtoSnapshot, categoria) {
+      const produto = produtoSnapshot.val();
+      const tabela = document.getElementById('tabelaProdutos');
+      
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><img src="${produto.imagem}" alt="${produto.nome}" style="width: 50px; height: 50px; object-fit: cover;"></td>
+        <td>${produto.nome}</td>
+        <td>${categoria}</td>
+        <td>R$ ${produto.preco.toFixed(2)}</td>
+        <td>${produto.ativo !== false ? 'Ativo' : 'Inativo'}</td>
+        <td>
+          <button class="btn btn-sm" onclick="editarProduto('${produtoSnapshot.key}', '${categoria}')">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+        </td>
+      `;
+      
+      tabela.appendChild(tr);
+    }
+
+    function editarProduto(produtoId, categoria) {
+      database.ref(`produtos/${categoria}/${produtoId}`).once('value').then(snapshot => {
+        const produto = snapshot.val();
+        
+        document.getElementById('produtoIdEditar').value = produtoId;
+        document.getElementById('produtoCategoriaOriginal').value = categoria;
+        document.getElementById('produtoNomeEditar').value = produto.nome;
+        document.getElementById('produtoPrecoEditar').value = produto.preco;
+        document.getElementById('produtoImagemEditar').value = produto.imagem;
+        document.getElementById('produtoCategoriaEditar').value = categoria;
+        document.getElementById('produtoAtivoEditar').checked = produto.ativo !== false;
+        
+        document.getElementById('modalEditarProduto').style.display = 'block';
+      });
+    }
+
+    document.getElementById('formEditarProduto').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const produtoId = document.getElementById('produtoIdEditar').value;
+      const categoriaOriginal = document.getElementById('produtoCategoriaOriginal').value;
+      const novaCategoria = document.getElementById('produtoCategoriaEditar').value.toLowerCase();
+      
+      const produtoAtualizado = {
+        nome: document.getElementById('produtoNomeEditar').value,
+        preco: parseFloat(document.getElementById('produtoPrecoEditar').value),
+        imagem: document.getElementById('produtoImagemEditar').value,
+        categoria: novaCategoria,
+        ativo: document.getElementById('produtoAtivoEditar').checked
+      };
+      
+      if (categoriaOriginal !== novaCategoria) {
+        const updates = {};
+        updates[`produtos/${categoriaOriginal}/${produtoId}`] = null;
+        updates[`produtos/${novaCategoria}/${produtoId}`] = produtoAtualizado;
+        
+        database.ref().update(updates).then(() => {
+          alert('Produto atualizado com sucesso!');
+          fecharModal('modalEditarProduto');
+          carregarProdutos();
+        }).catch(error => {
+          alert('Erro ao atualizar produto: ' + error.message);
+        });
+      } else {
+        database.ref(`produtos/${categoriaOriginal}/${produtoId}`).update(produtoAtualizado)
+          .then(() => {
+            alert('Produto atualizado com sucesso!');
+            fecharModal('modalEditarProduto');
+            carregarProdutos();
+          }).catch(error => {
+            alert('Erro ao atualizar produto: ' + error.message);
+          });
+      }
+    });
+
+    function confirmarExclusaoProduto() {
+      if (confirm('Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.')) {
+        const produtoId = document.getElementById('produtoIdEditar').value;
+        const categoria = document.getElementById('produtoCategoriaOriginal').value;
+        
+        database.ref(`produtos/${categoria}/${produtoId}`).remove()
+          .then(() => {
+            alert('Produto excluído com sucesso!');
+            fecharModal('modalEditarProduto');
+            carregarProdutos();
+          }).catch(error => {
+            alert('Erro ao excluir produto: ' + error.message);
+          });
+      }
+    }
+
+    function abrirModalInserirProduto() {
+      document.getElementById('modalInserirProduto').style.display = 'block';
+    }
+
+    document.getElementById('formNovoProduto').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nome = document.getElementById('produtoNome').value;
+      const preco = parseFloat(document.getElementById('produtoPreco').value);
+      const imagem = document.getElementById('produtoImagem').value;
+      const categoria = document.getElementById('produtoCategoria').value.toLowerCase();
+      const ativo = document.getElementById('produtoAtivo').checked;
+
+      const novoProduto = {
+        nome,
+        preco,
+        imagem,
+        categoria,
+        ativo
+      };
+
+      database.ref(`produtos/${categoria}`).push(novoProduto).then(() => {
+        alert('Produto adicionado com sucesso!');
+        document.getElementById('formNovoProduto').reset();
+        fecharModal('modalInserirProduto');
+        carregarProdutos();
+      }).catch(error => {
+        alert('Erro ao adicionar produto: ' + error.message);
+      });
+    });
+
+    function fecharModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
     function updateLateOrdersDashboard() {
       const now = new Date();
-      const lateThreshold = 5 * 1000; //TEMPO DE ATRASO 5 SEGUNDOS
+      const lateThreshold = 5 * 1000;
       const lateOrdersBody = document.getElementById('late-orders-body');
       
       const lateOrders = allOrders.filter(order => {
@@ -1741,8 +2020,7 @@
               <h4>${pedido.cliente.nome}</h4>
               <p>${pedido.cliente.telefone}</p>
               <p><i class="fas fa-map-marker-alt"></i> ${pedido.cliente.endereco || 'Endereço não informado'}</p>
-<p><i class="fas fa-wallet"></i> Forma de pagamento: ${pedido.pagamento || 'Não informado'}</p>
-
+              <p><i class="fas fa-wallet"></i> Forma de pagamento: ${pedido.pagamento || 'Não informado'}</p>
             </div>
           </div>
           <div class="order-status ${statusClass}">${statusText}</div>
@@ -1762,8 +2040,8 @@
             </div>
           </div>
           <div class="order-actions">
-<button class="btn btn-sm btn-outline" onclick="prepararImpressaoCozinha(\'${pedido.id}\')"><i class="fas fa-print"></i> Imprimir Cozinha</button>
-<button class="btn btn-sm btn-outline" onclick="prepararImpressaoEntrega(\'${pedido.id}\')"><i class="fas fa-print"></i> Imprimir Entrega</button>
+            <button class="btn btn-sm btn-outline" onclick="prepararImpressaoCozinha('${pedido.id}')"><i class="fas fa-print"></i> Imprimir Cozinha</button>
+            <button class="btn btn-sm btn-outline" onclick="prepararImpressaoEntrega('${pedido.id}')"><i class="fas fa-print"></i> Imprimir Entrega</button>
             ${statusText === 'Pendente' ? `
               <button class="btn btn-sm" onclick="confirmarAceitarPedido('${pedido.id}')">
                 <i class="fas fa-check"></i> Aceitar
@@ -1986,8 +2264,7 @@
               <h4>${pedido.cliente.nome}</h4>
               <p>${pedido.cliente.telefone}</p>
               <p><i class="fas fa-map-marker-alt"></i> ${pedido.cliente.endereco || 'Endereço não informado'}</p>
-<p><i class="fas fa-wallet"></i> Forma de pagamento: ${pedido.pagamento || 'Não informado'}</p>
-
+              <p><i class="fas fa-wallet"></i> Forma de pagamento: ${pedido.pagamento || 'Não informado'}</p>
             </div>
           </div>
           <div class="order-status ${statusClass}">${statusText}</div>
@@ -2007,8 +2284,8 @@
             </div>
           </div>
           <div class="order-actions">
-<button class="btn btn-sm btn-outline" onclick="prepararImpressaoCozinha(\'${pedido.id}\')"><i class="fas fa-print"></i> Imprimir Cozinha</button>
-<button class="btn btn-sm btn-outline" onclick="prepararImpressaoEntrega(\'${pedido.id}\')"><i class="fas fa-print"></i> Imprimir Entrega</button>
+            <button class="btn btn-sm btn-outline" onclick="prepararImpressaoCozinha('${pedido.id}')"><i class="fas fa-print"></i> Imprimir Cozinha</button>
+            <button class="btn btn-sm btn-outline" onclick="prepararImpressaoEntrega('${pedido.id}')"><i class="fas fa-print"></i> Imprimir Entrega</button>
             ${statusText === 'Pendente' ? `
               <button class="btn btn-sm" onclick="confirmarAceitarPedido('${pedido.id}')">
                 <i class="fas fa-check"></i> Aceitar
@@ -2058,10 +2335,6 @@
 
     function abrirRelatorioLogin() {
       document.getElementById('relatorioLoginModal').style.display = 'block';
-    }
-
-    function fecharModal(id) {
-      document.getElementById(id).style.display = 'none';
     }
 
     function verificarLoginRelatorio() {
@@ -2587,7 +2860,7 @@
         document.getElementById('senhaInput').value = '';
       });
     };
-</script>
+  </script>
 
   <audio id="somNotificacao" src="notificacao.mp3" preload="auto"></audio>
 
@@ -2597,72 +2870,6 @@
       if (som) som.play().catch(() => {});
     }, { once: true });
   </script>
-
-<audio id="somNotificacao">
-  <source src="notificacao.mp3" type="audio/mpeg">
-  Seu navegador não suporta áudio.
-</audio>
-
-
-<div id="modalInserirProduto" class="modal">
-  <div class="modal-content">
-    <span class="close-modal" onclick="fecharModal('modalInserirProduto')">&times;</span>
-    <h2>Inserir Novo Produto</h2>
-    <form id="formNovoProduto">
-      <div class="input-group">
-        <label for="produtoNome">Nome do Produto</label>
-        <input type="text" id="produtoNome" required>
-      </div>
-      <div class="input-group">
-        <label for="produtoPreco">Preço (R$)</label>
-        <input type="number" step="0.01" id="produtoPreco" required>
-      </div>
-      <div class="input-group">
-        <label for="produtoImagem">URL da Imagem</label>
-        <input type="url" id="produtoImagem" required>
-      </div>
-      <div class="input-group">
-        <label for="produtoCategoria">Categoria</label>
-        <input type="text" id="produtoCategoria" required>
-      </div>
-      <button type="submit" class="btn btn-block">Adicionar Produto</button>
-    </form>
-  </div>
-</div>
-
-<script>
-  function abrirModalInserirProduto() {
-    document.getElementById('modalInserirProduto').style.display = 'block';
-  }
-  function fecharModal(id) {
-    document.getElementById(id).style.display = 'none';
-  }
-
-  const db = firebase.database();
-
-  document.getElementById('formNovoProduto').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const nome = document.getElementById('produtoNome').value;
-    const preco = parseFloat(document.getElementById('produtoPreco').value);
-    const imagem = document.getElementById('produtoImagem').value;
-    const categoria = document.getElementById('produtoCategoria').value.toLowerCase();
-
-    const novoProduto = {
-      nome,
-      preco,
-      imagem,
-      categoria
-    };
-
-    db.ref(`produtos/${categoria}`).push(novoProduto).then(() => {
-      alert('Produto adicionado com sucesso!');
-      document.getElementById('formNovoProduto').reset();
-      fecharModal('modalInserirProduto');
-    }).catch(error => {
-      alert('Erro ao adicionar produto: ' + error.message);
-    });
-  });
-</script>
 
 </body>
 </html>
