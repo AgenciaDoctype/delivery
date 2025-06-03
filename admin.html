@@ -1,4 +1,5 @@
 <!--ESSE JA TEM O MODAL PARA INSERIR OS ITENS DIRETAMENTE NO PEDIDOS e COM PEDIDOS EM ATRASO FUNCIONAL .HTML-->
+<!--ESSE JA TEM O MODAL PARA INSERIR OS ITENS DIRETAMENTE NO PEDIDOS.HTML-->
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -607,6 +608,7 @@
       background-color: #3d8b40;
     }
     
+    
     .btn-warning {
       background-color: var(--warning);
       color: #333;
@@ -999,19 +1001,13 @@
 </head>
 <body>
   <div class="overlay"></div>
-
-  <!--LOGO COM DESCRIÇÃO DO PAINEL QUE ESTA LOGADO-->
-   <div class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <div class="logo" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-      <img src="https://i.ibb.co/xSQgyyVf/UMA-LOGO-ANIMADA-para-um-app-de-delivery-de-fast-food-que-se-chama-Vapt-Vupt-1-Photoroom.png" 
-           alt="VaptVupt Deliver Logo" 
-           style="max-width: 200px; height: auto;">
-      <div style="color: #FF6B00; margin-top: 8px; font-size: 18px; font-weight: 600;"> Painel Administrativo        
+  
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+       <img src="https://i.ibb.co/xSQgyyVf/UMA-LOGO-ANIMADA-para-um-app-de-delivery-de-fast-food-que-se-chama-Vapt-Vupt-1-Photoroom.png" alt="VaptVupt Deliver Logo" style="max-width: 200px; height: auto;"> <!--LOGO CANTO SUPERIOR ESQUERDO-->
       </div>
     </div>
-  </div>
-    
     <ul class="sidebar-menu">
       <li><a href="#" class="active"><i class="fas fa-box"></i> Pedidos</a></li>
       <!--<li><a href="#" onclick="abrirRelatorioLogin()"><i class="fas fa-chart-line"></i> Relatórios</a> -->
@@ -1030,7 +1026,7 @@
   <div class="mobile-nav">
     <ul class="mobile-nav-menu">
       <li><a href="#" class="active"><i class="fas fa-box"></i><span>Pedidos</span></a></li>
-      <li><a href="#" onclick="abrirRelatorioLogin()"><i class="fas fa-chart-line"></i><span>Relatórios</span></a></li>
+      <li><a href="#" onclick="requestReportAccess('faturamentoPeriodo')"><i class="fas fa-chart-line"></i><span>Relatórios</span></a></li>
       <li><a href="#"><i class="fas fa-cog"></i><span>Config</span></a></li>
       <li><a href="#"><i class="fas fa-user"></i><span>Perfil</span></a></li>
     </ul>
@@ -1558,13 +1554,13 @@
           statusText = 'Preparando pedido';
           statusClass = 'status-preparing';
           actionButton = `
-            <button class="action-btn send" onclick="confirmarEnviarEntrega('${order.id}')">
+            <button class="btn btn-sm btn-warning" onclick="confirmarEnviarEntrega('${order.id}')">
               Enviar para Entrega
             </button>
           `;
         } else {
           actionButton = `
-            <button class="action-btn accept" onclick="confirmarAceitarPedido('${order.id}')">
+            <button class="btn btn-sucess btn-sm" onclick="confirmarAceitarPedido('${order.id}')">
               Aceitar Pedido
             </button>
           `;
