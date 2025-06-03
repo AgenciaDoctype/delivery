@@ -1,4 +1,4 @@
-<!--ESSE JA TEM O MODAL PARA INSERIR OS ITENS DIRETAMENTE NO PEDIDOS E COM PEDIDOS EM ATRASO.HTML-->
+<!--ESSE JA TEM O MODAL PARA INSERIR OS ITENS DIRETAMENTE NO PEDIDOS E COM PEDIDOS EM ATRASO, ESCONDE O SLIDEBAR DOS RELATORIOS, SÓ APARECE DEPOIS DO LOGIN.HTML-->
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -1001,7 +1001,7 @@
 <body>
   <div class="overlay"></div>
   
-  <div class="sidebar" id="sidebar">
+  <div class="sidebar" id="sidebar" style="display: none;"> <!--SLIDEBAR LATERAL ASSIM ELE FICA OCULTO, MAS NA FUNÇÃO verificarSenha() ele aparece apos a senha inserida -->
     <div class="sidebar-header">
       <div class="logo">
        <img src="https://i.ibb.co/xSQgyyVf/UMA-LOGO-ANIMADA-para-um-app-de-delivery-de-fast-food-que-se-chama-Vapt-Vupt-1-Photoroom.png" alt="VaptVupt Deliver Logo" style="max-width: 200px; height: auto;"> <!--LOGO CANTO SUPERIOR ESQUERDO-->
@@ -1417,14 +1417,12 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    const senhaCorreta = "1234";
+    
     let allOrders = [];
     let pedidosAnteriores = [];
     let faturamentoChart, statusChart, relatorioChart;
     let currentOrderId = null;
-
-    const relatorioUsuario = "admin";
-    const relatorioSenha = "1234";
+   
 
     function initCharts() {
       const ctxFaturamento = document.getElementById('faturamentoChart').getContext('2d');
@@ -1511,7 +1509,7 @@
 
     function updateLateOrdersDashboard() {
       const now = new Date();
-      const lateThreshold = 15 * 60 * 1000;
+      const lateThreshold = 5 * 1000; //TEMPO DE ATRASO 5 SEGUNDOS
       const lateOrdersBody = document.getElementById('late-orders-body');
       
       const lateOrders = allOrders.filter(order => {
@@ -1633,26 +1631,7 @@
     function tocarSomNotificacao() {
       const som = document.getElementById('somNotificacao');
       if (som) som.play();
-    }
-
-    function verificarSenha() {
-      const senhaDigitada = document.getElementById('senhaInput').value;
-      if (senhaDigitada === senhaCorreta) {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('painelPedidos').style.display = 'block';
-        initCharts();
-        carregarPedidosFirebase();
-        
-        if (window.innerWidth <= 992) {
-          document.getElementById('toggleSidebar').style.display = 'block';
-        }
-      } else {
-        document.getElementById('mensagemErro').style.display = 'block';
-        const form = document.getElementById('loginFormElement');
-        form.style.animation = 'shake 0.5s';
-        setTimeout(() => form.style.animation = '', 500);
-      }
-    }
+    }   
 
     const style = document.createElement('style');
     style.textContent = `
@@ -2559,17 +2538,51 @@
     });
 
     window.realizarLogin = function () {
-      const email = document.getElementById('emailInput').value;
-      const senha = document.getElementById('senhaInput').value;
-      signInWithEmailAndPassword(auth, email, senha)
-        .catch(() => {
-          document.getElementById('mensagemErro').style.display = 'block';
-        });
-    };
+  const email = document.getElementById('emailInput').value;
+  const senha = document.getElementById('senhaInput').value;
+
+  signInWithEmailAndPassword(auth, email, senha)
+    .then((userCredential) => {
+      // Login via Firebase foi bem-sucedido
+
+      // Esconde a tela de login
+      document.getElementById('loginForm').style.display = 'none';
+
+      // Mostra o painel principal e o slidebar lateral
+      document.getElementById('painelPedidos').style.display = 'block';
+      document.getElementById('sidebar').style.display = 'block';
+
+      // Inicia gráficos e carrega pedidos do Firebase
+      initCharts();
+      carregarPedidosFirebase();
+
+      // Se for em dispositivo pequeno, mostra o botão de abrir o menu
+      if (window.innerWidth <= 992) {
+        document.getElementById('toggleSidebar').style.display = 'block';
+      }
+    })
+    .catch(() => {
+      // Erro ao fazer login
+      document.getElementById('mensagemErro').style.display = 'block';
+    });
+};
+
 
     window.logout = function () {
-      signOut(auth);
-    };
+  signOut(auth).then(() => {
+    // Esconde painel e sidebar
+    document.getElementById('painelPedidos').style.display = 'none';
+    document.getElementById('sidebar').style.display = 'none';
+
+    // Mostra login
+    document.getElementById('loginForm').style.display = 'flex';
+
+    // Limpa os campos de login (opcional)
+    document.getElementById('emailInput').value = '';
+    document.getElementById('senhaInput').value = '';
+  });
+};
+
   </script>
 
   <audio id="somNotificacao" src="notificacao.mp3" preload="auto"></audio>
