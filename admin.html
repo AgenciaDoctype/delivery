@@ -1,4 +1,4 @@
-<!--ESSE JA TEM O MODAL PARA INSERIR OS ITENS DIRETAMENTE NO PEDIDOS E COM PEDIDOS EM ATRASO, ESCONDE O SLIDEBAR DOS RELATORIOS, SÓ APARECE DEPOIS DO LOGIN.HTML-->
+<!--ESSE JA TEM O MODAL PARA INSERIR OS ITENS DIRETAMENTE NO PEDIDOS E COM PEDIDOS EM ATRASO SLIDERBAR DOS RELATORIOS APARECE SO DEPOIS DO LOGIN E PAGINA COM LOGIN SE ATUALIZAR.HTML-->
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -2512,7 +2512,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBHo3SWxux8a5vxRVO_SU-37bHNfLX86Sc",
@@ -2526,64 +2526,67 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    // Configura persistência apenas para a sessão
+    setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        console.log("Persistência configurada para sessão apenas");
+      })
+      .catch((error) => {
+        console.error("Erro ao configurar persistência:", error);
+      });
+
+    // Faz logout quando a página é fechada ou recarregada
+    window.addEventListener('beforeunload', function() {
+      signOut(auth).catch(error => {
+        console.error("Erro ao fazer logout:", error);
+      });
+    });
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('painelPedidos').style.display = 'block';
+        document.getElementById('sidebar').style.display = 'block';
         if (typeof carregarPedidosFirebase === 'function') carregarPedidosFirebase();
       } else {
         document.getElementById('loginForm').style.display = 'flex';
         document.getElementById('painelPedidos').style.display = 'none';
+        document.getElementById('sidebar').style.display = 'none';
+        document.getElementById('emailInput').value = '';
+        document.getElementById('senhaInput').value = '';
       }
     });
 
     window.realizarLogin = function () {
-  const email = document.getElementById('emailInput').value;
-  const senha = document.getElementById('senhaInput').value;
+      const email = document.getElementById('emailInput').value;
+      const senha = document.getElementById('senhaInput').value;
 
-  signInWithEmailAndPassword(auth, email, senha)
-    .then((userCredential) => {
-      // Login via Firebase foi bem-sucedido
-
-      // Esconde a tela de login
-      document.getElementById('loginForm').style.display = 'none';
-
-      // Mostra o painel principal e o slidebar lateral
-      document.getElementById('painelPedidos').style.display = 'block';
-      document.getElementById('sidebar').style.display = 'block';
-
-      // Inicia gráficos e carrega pedidos do Firebase
-      initCharts();
-      carregarPedidosFirebase();
-
-      // Se for em dispositivo pequeno, mostra o botão de abrir o menu
-      if (window.innerWidth <= 992) {
-        document.getElementById('toggleSidebar').style.display = 'block';
-      }
-    })
-    .catch(() => {
-      // Erro ao fazer login
-      document.getElementById('mensagemErro').style.display = 'block';
-    });
-};
-
+      signInWithEmailAndPassword(auth, email, senha)
+        .then((userCredential) => {
+          document.getElementById('loginForm').style.display = 'none';
+          document.getElementById('painelPedidos').style.display = 'block';
+          document.getElementById('sidebar').style.display = 'block';
+          initCharts();
+          carregarPedidosFirebase();
+          if (window.innerWidth <= 992) {
+            document.getElementById('toggleSidebar').style.display = 'block';
+          }
+        })
+        .catch(() => {
+          document.getElementById('mensagemErro').style.display = 'block';
+        });
+    };
 
     window.logout = function () {
-  signOut(auth).then(() => {
-    // Esconde painel e sidebar
-    document.getElementById('painelPedidos').style.display = 'none';
-    document.getElementById('sidebar').style.display = 'none';
-
-    // Mostra login
-    document.getElementById('loginForm').style.display = 'flex';
-
-    // Limpa os campos de login (opcional)
-    document.getElementById('emailInput').value = '';
-    document.getElementById('senhaInput').value = '';
-  });
-};
-
-  </script>
+      signOut(auth).then(() => {
+        document.getElementById('painelPedidos').style.display = 'none';
+        document.getElementById('sidebar').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'flex';
+        document.getElementById('emailInput').value = '';
+        document.getElementById('senhaInput').value = '';
+      });
+    };
+</script>
 
   <audio id="somNotificacao" src="notificacao.mp3" preload="auto"></audio>
 
