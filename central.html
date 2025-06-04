@@ -51,13 +51,13 @@
           statusText = 'Preparando pedido';
           statusClass = 'status-preparing';
           actionButton = `
-            <button class="action-btn send" onclick="confirmarEnviarEntrega('${order.id}')">
+            <button class="btn btn-sm btn-warning" onclick="confirmarEnviarEntrega('${order.id}')">
               Enviar para Entrega
             </button>
           `;
         } else {
           actionButton = `
-            <button class="action-btn accept" onclick="confirmarAceitarPedido('${order.id}')">
+            <button class="btn btn-sucess btn-sm" onclick="confirmarAceitarPedido('${order.id}')">
               Aceitar Pedido
             </button>
           `;
@@ -1645,13 +1645,13 @@
           statusText = 'Preparando pedido';
           statusClass = 'status-preparing';
           actionButton = `
-            <button class="action-btn send" onclick="confirmarEnviarEntrega('${order.id}')">
+            <button class="btn btn-sm btn-warning" onclick="confirmarEnviarEntrega('${order.id}')">
               Enviar para Entrega
             </button>
           `;
         } else {
-          actionButton = `
-            <button class="action-btn accept" onclick="confirmarAceitarPedido('${order.id}')">
+         actionButton = `
+            <button class="btn btn-sucess btn-sm" onclick="confirmarAceitarPedido('${order.id}')">
               Aceitar Pedido
             </button>
           `;
