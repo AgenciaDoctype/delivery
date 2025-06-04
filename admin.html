@@ -2594,6 +2594,7 @@
       document.getElementById('painelPedidos').style.display = 'block';
       initCharts();
       carregarPedidosFirebase();
+      setInterval(updateLateOrdersDashboard, 30000);
       if (window.innerWidth <= 992) {
         document.getElementById('toggleSidebar').style.display = 'block';
       }
@@ -2822,6 +2823,7 @@
         document.getElementById('painelPedidos').style.display = 'block';
         document.getElementById('sidebar').style.display = 'block';
         if (typeof carregarPedidosFirebase === 'function') carregarPedidosFirebase();
+        setInterval(updateLateOrdersDashboard, 30000);
       } else {
         document.getElementById('loginForm').style.display = 'flex';
         document.getElementById('painelPedidos').style.display = 'none';
@@ -2842,6 +2844,7 @@
           document.getElementById('sidebar').style.display = 'block';
           initCharts();
           carregarPedidosFirebase();
+          setInterval(updateLateOrdersDashboard, 30000);
           if (window.innerWidth <= 992) {
             document.getElementById('toggleSidebar').style.display = 'block';
           }
