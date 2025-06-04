@@ -10,7 +10,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js">
     function updateLateOrdersDashboard() {
       const now = new Date();
-      const lateThreshold = 15 * 60 * 1000;
+      const lateThreshold = 5 * 1000;
       const lateOrdersBody = document.getElementById('late-orders-body');
 
       const lateOrders = allOrders.filter(order => {
@@ -74,6 +74,17 @@
 
         lateOrdersBody.appendChild(row);
       });
+    }
+
+
+    function confirmarAceitarPedido(pedidoId) {
+      currentOrderId = pedidoId;
+      updateOrderStatus(pedidoId, 'preparing');
+    }
+
+    function confirmarEnviarEntrega(pedidoId) {
+      currentOrderId = pedidoId;
+      updateOrderStatus(pedidoId, 'delivery');
     }
 
 </script>
@@ -1592,7 +1603,7 @@
 
     function updateLateOrdersDashboard() {
       const now = new Date();
-      const lateThreshold = 15 * 60 * 1000;
+      const lateThreshold = 5 * 1000;
       const lateOrdersBody = document.getElementById('late-orders-body');
       
       const lateOrders = allOrders.filter(order => {
@@ -1719,7 +1730,7 @@
         document.getElementById('painelPedidos').style.display = 'block';
         initCharts();
         carregarPedidosFirebase();
-        setInterval(updateLateOrdersDashboard, 30000);
+        setInterval(updateLateOrdersDashboard, 5000);
         
         if (window.innerWidth <= 992) {
           document.getElementById('toggleSidebar').style.display = 'block';
@@ -2420,7 +2431,7 @@
       document.getElementById('painelPedidos').style.display = 'block';
       initCharts();
       carregarPedidosFirebase();
-      setInterval(updateLateOrdersDashboard, 30000);
+      setInterval(updateLateOrdersDashboard, 5000);
       if (window.innerWidth <= 992) {
         document.getElementById('toggleSidebar').style.display = 'block';
       }
@@ -2632,7 +2643,7 @@
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('painelPedidos').style.display = 'block';
         if (typeof carregarPedidosFirebase === 'function') carregarPedidosFirebase();
-        setInterval(updateLateOrdersDashboard, 30000);
+        setInterval(updateLateOrdersDashboard, 5000);
       } else {
         document.getElementById('loginForm').style.display = 'flex';
         document.getElementById('painelPedidos').style.display = 'none';
