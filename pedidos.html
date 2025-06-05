@@ -416,7 +416,7 @@ firebase.database().ref('produtos').on('value', snapshot => {
   container.innerHTML = '';
 
   snapshot.forEach(categoriaSnapshot => {
-    const categoria = categoriaSnapshot.key;
+    const categoria = categoriaSnapshot.key.toUpperCase();
     const produtos = categoriaSnapshot.val();
 
     // Filtra os produtos ativos
