@@ -1,0 +1,749 @@
+<!--PEDIDOS INTEGRADO COM O FIREBASE, NO PAINEL ADMIN O USUARIO PODE ESTAR EFETUANDO A INSERÇÃO DOS ITENS POR CATEGORIA-->
+
+
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VaptVupt Delivery</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link rel="icon" href="https://i.ibb.co/ccnPx5ym/Chat-GPT-Image-3-de-jun-de-2025-12-21-02-Photoroom.png" type="image/x-icon">
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+<style>
+    :root {
+      --primary: #EA1D2C;
+      --secondary: #FFC107;
+      --dark: #1A1A1A;
+      --light: #F5F5F5;
+      --success: #34A853;
+    }
+    
+    body {
+      background-color: #F5F5F5;
+      color: #333;
+      font-family: 'Poppins', sans-serif;
+      padding-bottom: 80px;
+    }
+    
+    .navbar {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 10px 0;
+    }
+    
+    .navbar-brand {
+      color: var(--primary) !important;
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .navbar-brand i {
+      margin-right: 10px;
+    }
+    
+    .categoria h2 {
+      color: var(--dark);
+      margin: 1.5rem 0 1rem;
+      font-weight: 600;
+      font-size: 1.5rem;
+      position: relative;
+      padding-left: 15px;
+    }
+    
+    .categoria h2:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 5px;
+      height: 20px;
+      width: 5px;
+      background: var(--primary);
+      border-radius: 5px;
+    }
+    
+    .produto-card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.3s;
+      height: 100%;
+      overflow: hidden;
+      border: none;
+      margin-bottom: 20px;
+    }
+    
+    .produto-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .produto-card img {
+      height: 150px;
+      object-fit: cover;
+      width: 100%;
+    }
+    
+    .card-body {
+      padding: 15px;
+    }
+    
+    .card-title {
+      color: var(--dark);
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+    
+    .card-text {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+    
+    .price-tag {
+      background-color: var(--primary);
+      color: white;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+    }
+    
+    .btn-add {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 8px 15px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      width: 100%;
+      transition: all 0.3s;
+    }
+    
+    .btn-add:hover {
+      background-color: #D91624;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(234, 29, 44, 0.3);
+    }
+    
+    .btn-add i {
+      margin-right: 5px;
+    }
+    
+    /* Modal do Carrinho */
+    .modal-content {
+      border-radius: 15px;
+      border: none;
+    }
+    
+    .modal-header {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    
+    .modal-title {
+      color: var(--primary);
+      font-weight: 700;
+    }
+    
+    .list-group-item {
+      border: none;
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+    }
+    
+    .btn-finalizar {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px;
+      font-weight: 600;
+      width: 100%;
+    }
+    
+    .btn-finalizar:hover {
+      background-color: #D91624;
+    }
+    
+    /* Barra inferior */
+    .bottom-navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+      padding: 10px 0;
+    }
+    
+    .nav-item {
+      text-align: center;
+    }
+    
+    .nav-link {
+      color: #666;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .nav-link i {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+    
+    .nav-link.active {
+      color: var(--primary);
+    }
+    
+    /* Popup de quantidade */
+    .quantity-popup {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: 20px;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+      z-index: 1050;
+      transition: all 0.3s ease;
+    }
+    
+    .quantity-popup.show {
+      bottom: 80px;
+    }
+    
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1040;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    
+    .overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* Badge do carrinho */
+    .badge-carrinho {
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      position: absolute;
+      top: -5px;
+      right: -5px;
+    }
+    
+    /* Info de entrega */
+    .delivery-info {
+      background: #FFF9E6;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+    
+    .delivery-info i {
+      color: var(--secondary);
+      margin-right: 5px;
+    }
+    
+    @media (min-width: 992px) {
+      .bottom-navbar {
+        display: none;
+      }
+      
+      .navbar {
+        padding: 15px 0;
+      }
+      
+      .produto-card img {
+        height: 180px;
+      }
+    }
+  </style>
+</link></head>
+<body>
+<!-- Navbar simplificada -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+<div class="container">
+<a class="navbar-brand" href="#">
+<img src="https://i.ibb.co/ccnPx5ym/Chat-GPT-Image-3-de-jun-de-2025-12-21-02-Photoroom.png" 
+     alt="VaptVupt Logo" 
+     style="height: 80px; vertical-align: middle; margin-right: 10px;">
+<span style="font-size: 1.0rem;">Faça seu pedido!</span>
+      </a>
+<button class="btn btn-link position-relative ms-auto" data-bs-target="#carrinhoModal" data-bs-toggle="modal">
+<i class="fas fa-shopping-cart" style="color: var(--primary); font-size: 1.2rem;"></i>
+<span class="badge-carrinho" id="contadorCarrinho">0</span>
+</button>
+<button class="btn btn-link position-relative ms-3" onclick="abrirPopupPedidos()">
+<i class="fas fa-receipt" style="color: var(--primary); font-size: 1.2rem;"></i>
+</button>
+</div>
+</nav>
+<div class="container mt-3">
+<div class="container mt-3" id="container-produtos"></div>
+<div id="container-produtos"></div>
+
+<!-- Modal do Carrinho -->
+<div aria-hidden="true" aria-labelledby="carrinhoModalLabel" class="modal fade" id="carrinhoModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="carrinhoModalLabel"><i class="fas fa-shopping-cart me-2"></i>Seu Pedido</h5>
+<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+</div>
+<div class="modal-body">
+<div class="delivery-info">
+<i class="fas fa-clock"></i> Entrega em até 45 min
+          </div>
+<ul class="list-group list-group-flush mb-3" id="listaItens"></ul>
+<div class="d-flex justify-content-between align-items-center mb-3">
+<span class="fw-bold">Taxa de entrega:</span>
+<span>R$ 5,00</span>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+<span class="fw-bold">Total:</span>
+<span class="fw-bold fs-5">R$ <span id="totalPedido">0,00</span></span>
+</div>
+<div class="form-check mb-3">
+<input class="form-check-input" id="retiradaLocal" type="checkbox"/>
+<label class="form-check-label" for="retiradaLocal">
+              Quero retirar no local
+            </label>
+</div>
+<input class="form-control mb-2" id="nomeCliente" placeholder="Seu nome" type="text">
+<input class="form-control mb-2" id="telefoneCliente" placeholder="Telefone" type="tel"/>
+<input class="form-control mb-2" id="enderecoCliente" placeholder="Endereço para entrega" type="text"/>
+<div class="mb-3">
+  <label class="form-label fw-bold">Forma de Pagamento:</label>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="pagamento" id="pagamentoDinheiro" value="Dinheiro" onclick="document.getElementById('trocoPara').style.display='block'">
+    <label class="form-check-label" for="pagamentoDinheiro">
+      <i class="fas fa-money-bill-wave text-success"></i> Dinheiro
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="pagamento" id="pagamentoCredito" value="Cartão de Crédito" onclick="document.getElementById('trocoPara').style.display='none'">
+    <label class="form-check-label" for="pagamentoCredito">
+      <i class="fas fa-credit-card text-primary"></i> Cartão de Crédito
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="pagamento" id="pagamentoDebito" value="Cartão de Débito" onclick="document.getElementById('trocoPara').style.display='none'">
+    <label class="form-check-label" for="pagamentoDebito">
+      <i class="fas fa-credit-card text-primary"></i> Cartão de Débito
+    </label>
+  </div>
+</div>
+<div class="mb-3" id="trocoPara" style="display:none;">
+  <label class="form-label">Troco para quanto?</label>
+  <input type="number" class="form-control" id="trocoValor" placeholder="Ex: 100.00">
+</div>
+
+</input></div>
+<div class="modal-footer">
+<button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Continuar Comprando</button>
+<button class="btn btn-finalizar" onclick="enviarPedido()" type="button">
+<i class="fas fa-bolt me-1"></i>Finalizar Pedido
+          </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Popup de quantidade -->
+<div class="quantity-popup" id="quantityPopup">
+<h5 class="mb-3" id="popupProductName"></h5>
+<div class="mb-3">
+<label class="form-label">Quantidade</label>
+<input class="form-control" id="popupQuantity" min="1" type="number" value="1"/>
+</div>
+<div class="mb-3">
+<label class="form-label">Observações</label>
+<textarea class="form-control" id="popupObservations" placeholder="Ex: sem cebola, ponto da carne, etc."></textarea>
+</div>
+<button class="btn btn-primary w-100" onclick="addItemFromPopup()">Confirmar</button>
+</div>
+<div class="overlay" id="quantityOverlay"></div>
+<!-- Barra de navegação inferior -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHo3SWxux8a5vxRVO_SU-37bHNfLX86Sc",
+      authDomain: "vaptvupt-delivery.firebaseapp.com",
+      databaseURL: "https://vaptvupt-delivery-default-rtdb.firebaseio.com/",
+      projectId: "vaptvupt-delivery",
+      storageBucket: "vaptvupt-delivery.firebasestorage.app",
+      messagingSenderId: "202472617537",
+      appId: "1:202472617537:web:d327b2b5fe2f09ebf7b8c0",
+      measurementId: "G-P3TXFL4XWD"
+    };
+    // Inicializa o Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+
+firebase.database().ref('produtos').on('value', snapshot => {
+  const container = document.getElementById('container-produtos');
+  container.innerHTML = '';
+
+  snapshot.forEach(categoriaSnapshot => {
+    const categoria = categoriaSnapshot.key;
+    const produtos = categoriaSnapshot.val();
+
+    // Filtra os produtos ativos
+    const produtosAtivos = Object.entries(produtos).filter(([id, produto]) => produto.ativo);
+
+    if (produtosAtivos.length > 0) {
+      const categoriaDiv = document.createElement('div');
+      categoriaDiv.classList.add('categoria');
+      categoriaDiv.innerHTML = `<h2>${categoria}</h2><div class="row"></div>`;
+      const row = categoriaDiv.querySelector('.row');
+
+      produtosAtivos.forEach(([id, produto]) => {
+        const card = document.createElement('div');
+        card.className = 'col-md-4';
+        card.innerHTML = `
+          <div class="produto-card">
+            <img src="${produto.imagem}" alt="${produto.nome}">
+            <div class="card-body">
+              <h5 class="card-title">${produto.nome}</h5>
+              <p class="card-text">${produto.categoria}</p>
+              <span class="price-tag">R$ ${parseFloat(produto.preco).toFixed(2)}</span>
+              <button class="btn btn-add mt-2" onclick="showQuantityPopup('${produto.nome}', ${produto.preco})">
+                <i class="fas fa-plus"></i> Adicionar
+              </button>
+            </div>
+          </div>
+        `;
+        row.appendChild(card);
+      });
+
+      container.appendChild(categoriaDiv);
+    }
+  });
+});
+
+
+    let itensPedido = [];
+    let currentProduct = null;
+
+    function showQuantityPopup(name, price) {
+      currentProduct = { name, price };
+      document.getElementById('popupProductName').textContent = name;
+      document.getElementById('popupQuantity').value = 1;
+      document.getElementById('popupObservations').value = '';
+      
+      document.getElementById('quantityPopup').classList.add('show');
+      document.getElementById('quantityOverlay').classList.add('show');
+    }
+
+    function hideQuantityPopup() {
+      document.getElementById('quantityPopup').classList.remove('show');
+      document.getElementById('quantityOverlay').classList.remove('show');
+    }
+
+    function addItemFromPopup() {
+      const quantity = document.getElementById('popupQuantity').value;
+      const observations = document.getElementById('popupObservations').value;
+      
+      adicionarItem(
+        currentProduct.name, 
+        currentProduct.price, 
+        quantity, 
+        observations
+      );
+      
+      hideQuantityPopup();
+    }
+
+    function adicionarItem(nome, preco, quantidade, observacoes) {
+      const item = { 
+        nome, 
+        preco: parseFloat(preco), 
+        quantidade: parseInt(quantidade), 
+        observacoes 
+      };
+      itensPedido.push(item);
+      atualizarLista();
+      atualizarContadorCarrinho();
+    }
+
+    function atualizarLista() {
+      const lista = document.getElementById('listaItens');
+      lista.innerHTML = '';
+      let subtotal = 0;
+      
+      itensPedido.forEach((item, index) => {
+        subtotal += item.preco * item.quantidade;
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+        
+        li.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <strong>${item.nome}</strong> x${item.quantidade}
+              ${item.observacoes ? `<div class="text-muted small mt-1">Obs: ${item.observacoes}</div>` : ''}
+            </div>
+            <div>
+              R$ ${(item.preco * item.quantidade).toFixed(2)}
+              <button class="btn btn-sm btn-outline-danger ms-2" onclick="removerItem(${index})">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        
+        lista.appendChild(li);
+      });
+      
+      const total = subtotal + 5; // Adiciona taxa de entrega
+      document.getElementById('totalPedido').textContent = total.toFixed(2);
+    }
+
+    function atualizarContadorCarrinho() {
+      const count = itensPedido.length;
+      document.getElementById('contadorCarrinho').textContent = count;
+    }
+
+    function removerItem(index) {
+      itensPedido.splice(index, 1);
+      atualizarLista();
+      atualizarContadorCarrinho();
+    }
+
+    function enviarPedido() {
+      const nome = document.getElementById('nomeCliente').value.trim();
+      const telefone = document.getElementById('telefoneCliente').value.trim();
+      const endereco = document.getElementById('enderecoCliente').value.trim();
+      const retirada = document.getElementById('retiradaLocal').checked;
+
+      if (!nome || !telefone || (!endereco && !retirada)) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+      }
+
+      if (itensPedido.length === 0) {
+        alert('Por favor, adicione pelo menos um item ao pedido.');
+        return;
+      }
+
+      
+const pagamentoSelecionado = document.querySelector('input[name="pagamento"]:checked');
+const pagamento = pagamentoSelecionado ? pagamentoSelecionado.value : 'Não informado';
+
+const troco = document.getElementById('trocoValor').value || '';
+
+const pedido = {
+        cliente: { 
+          nome, 
+          telefone, 
+          endereco: retirada ? 'Retirada no local' : endereco 
+        },
+        itens: itensPedido,
+        subtotal: parseFloat(document.getElementById('totalPedido').textContent) - 5,
+        taxaEntrega: retirada ? 0 : 5,
+        total: parseFloat(document.getElementById('totalPedido').textContent),
+        status: 'Aguardando confirmação',
+        data: new Date().toISOString(),
+        retirada: retirada,
+  pagamento: pagamento,
+  troco: troco
+      };
+
+      // Envia para o Firebase
+      const pedidosRef = database.ref('pedidos');
+      const novoPedidoRef = pedidosRef.push();
+      
+      novoPedidoRef.set(pedido)
+        .then(() => {
+          // Salva no localStorage para a página de status
+          localStorage.setItem('ultimoPedido', JSON.stringify({
+            cliente: { nome, telefone },
+            total: pedido.total,
+            idPedido: novoPedidoRef.key
+          }));
+          localStorage.setItem('statusPedido', pedido.status);
+          
+          // Limpa o carrinho
+          itensPedido = [];
+          atualizarLista();
+          atualizarContadorCarrinho();
+          
+          // Redireciona para a página de status
+          window.location.href = 'status.html';
+        })
+        .catch((error) => {
+          console.error('Erro ao enviar pedido:', error);
+          alert('Ocorreu um erro ao enviar seu pedido. Por favor, tente novamente.');
+        });
+    }
+
+    // Fechar popup ao clicar no overlay
+    document.getElementById('quantityOverlay').addEventListener('click', hideQuantityPopup);
+
+    // Inicializa o contador do carrinho
+    document.addEventListener('DOMContentLoaded', function() {
+      atualizarContadorCarrinho();
+    });
+  </script>
+<!-- Popup Meus Pedidos -->
+<div class="quantity-popup" id="popupMeusPedidos">
+<h5 class="mb-3">Consultar Meus Pedidos</h5>
+<div class="mb-3">
+<label class="form-label">Informe seu telefone:</label>
+<input class="form-control" id="telefoneConsulta" placeholder="Ex: 11999999999" type="tel"/>
+</div>
+<button class="btn btn-primary w-100 mb-3" onclick="buscarPedidosCliente()">Buscar</button>
+<div id="resultadoPedidos" style="max-height: 300px; overflow-y: auto;"></div>
+<button class="btn btn-outline-secondary w-100" onclick="fecharPopupPedidos()">Fechar</button>
+</div>
+<div class="overlay" id="overlayPedidos" onclick="fecharPopupPedidos()"></div>
+<script>
+function abrirPopupPedidos() {
+  document.getElementById('popupMeusPedidos').classList.add('show');
+  document.getElementById('overlayPedidos').classList.add('show');
+}
+
+function fecharPopupPedidos() {
+  document.getElementById('popupMeusPedidos').classList.remove('show');
+  document.getElementById('overlayPedidos').classList.remove('show');
+  document.getElementById('resultadoPedidos').innerHTML = '';
+  document.getElementById('telefoneConsulta').value = '';
+}
+
+
+function buscarPedidosCliente() {
+  const telefone = document.getElementById('telefoneConsulta').value.trim();
+  const resultadoDiv = document.getElementById('resultadoPedidos');
+
+  if (!telefone) {
+    alert('Por favor, informe seu telefone.');
+    return;
+  }
+
+  resultadoDiv.innerHTML = '<p>Buscando pedidos...</p>';
+
+  const pedidosRef = database.ref('pedidos');
+  pedidosRef.orderByChild('cliente/telefone').equalTo(telefone).once('value', snapshot => {
+    if (snapshot.exists()) {
+      let html = '';
+      snapshot.forEach(child => {
+        const pedido = child.val();
+        const id = child.key;
+        const data = new Date(pedido.data).toLocaleString('pt-BR');
+        const status = pedido.status;
+        const itens = pedido.itens.map(item => `${item.quantidade}x ${item.nome}`).join(', ');
+
+        html += `
+          <div class="border rounded p-2 mb-2">
+            <div><strong>Pedido:</strong> ${id}</div>
+            <div><strong>Data:</strong> ${data}</div>
+            <div><strong>Status:</strong> ${status}</div>
+            <div><strong>Itens:</strong> ${itens}</div>
+            <div><strong>Total:</strong> R$ ${pedido.total.toFixed(2)}</div>
+            ${status !== 'Pedido entregue' ? `<div class="mt-2"><a href='status.html' class='btn btn-sm btn-outline-primary'>Acompanhar Pedido</a></div>` : ''}
+          </div>
+        `;
+      });
+      resultadoDiv.innerHTML = html;
+    } else {
+      resultadoDiv.innerHTML = '<p>Nenhum pedido encontrado para este telefone.</p>';
+    }
+  });
+}
+
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const categoriasDiv = document.getElementById('container-produtos');
+
+  firebase.database().ref('produtos').once('value').then(snapshot => {
+    if (snapshot.exists()) {
+      const produtosPorCategoria = snapshot.val();
+
+      for (let categoria in produtosPorCategoria) {
+        const produtos = produtosPorCategoria[categoria];
+        const titulo = categoria.charAt(0).toUpperCase() + categoria.slice(1);
+
+        const divCategoria = document.createElement('div');
+        divCategoria.className = 'categoria';
+        divCategoria.innerHTML = `<h2>${titulo}</h2><div class="row g-3" id="cat-${categoria}"></div>`;
+
+        for (let key in produtos) {
+          const p = produtos[key];
+          const card = document.createElement('div');
+          card.className = 'col-md-4 col-sm-6';
+          card.innerHTML = `
+            <div class="card produto-card">
+              <img class="card-img-top" src="${p.imagem}" alt="${p.nome}">
+              <div class="card-body">
+                <h5 class="card-title">${p.nome}</h5>
+                <span class="price-tag">R$${p.preco.toFixed(2)}</span>
+                <button class="btn btn-add mt-3" onclick="showQuantityPopup('${p.nome}', ${p.preco})">
+                  <i class="fas fa-plus"></i>Adicionar
+                </button>
+              </div>
+            </div>
+          `;
+          divCategoria.querySelector('.row').appendChild(card);
+        }
+
+        categoriasDiv.appendChild(divCategoria);
+      }
+    } else {
+      categoriasDiv.innerHTML = '<p class="text-center mt-5">Nenhum produto cadastrado ainda.</p>';
+    }
+  });
+});
+</script>
+
+<script>
+  // Bloqueia o clique com botão direito
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
+
+  // Bloqueia F12, Ctrl+Shift+I/J, Ctrl+U
+  document.addEventListener('keydown', function(e) {
+    if (
+      e.key === 'F12' ||
+      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+      (e.ctrlKey && e.key === 'U')
+    ) {
+      e.preventDefault();
+    }
+  });
+</script>
+
+</body>
+</html>
