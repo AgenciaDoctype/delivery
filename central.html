@@ -2713,7 +2713,7 @@
     document.getElementById(id).style.display = 'none';
   }
 
-  const db = firebase.database();
+ const db = firebase.database();
 
   document.getElementById('formNovoProduto').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -2736,6 +2736,30 @@
     }).catch(error => {
       alert('Erro ao adicionar produto: ' + error.message);
     });
+  });
+</script>
+
+<!-- Áudio e proteções -->
+<audio id="somNotificacao" src="notificacao.mp3" preload="auto"></audio>
+
+<script>
+  document.addEventListener('click', () => {
+    const som = document.getElementById('somNotificacao');
+    if (som) som.play().catch(() => {});
+  }, { once: true });
+
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (
+      e.key === 'F12' ||
+      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+      (e.ctrlKey && e.key === 'U')
+    ) {
+      e.preventDefault();
+    }
   });
 </script>
 
