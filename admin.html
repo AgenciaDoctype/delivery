@@ -795,14 +795,15 @@
     }
 
     .print-content {
-      background: white;
-      margin: 2% auto;
-      padding: 20px;
-      width: 80%;
-      max-width: 600px;
-      color: black;
-      font-family: Arial, sans-serif;
-    }
+  background: white;
+  margin: 2% auto;
+  padding: 20px 10px 20px 20px; /* padding esquerdo maior */
+  width: 80%;
+  max-width: 600px;
+  color: black;
+  font-family: Arial, sans-serif;
+  text-align: left; /* garante alinhamento à esquerda */
+}
 
     .print-header {
       text-align: center;
@@ -1014,7 +1015,7 @@
     min-height: 100%;
     background: white;
     margin: 0;
-    padding: 5mm;
+    padding: 0mm 0 2mm 0mm;
     box-shadow: none;
     border: none;
     z-index: 9999;
@@ -1476,8 +1477,9 @@
   <div id="entregaPrintModal" class="print-modal">
     <div class="print-content">
       <div class="print-header">
-        <h1>Painel Administrativo</h1>
-        <p id="entregaPedidoInfo"></p>
+        <h1>    ENTREGA</h1>
+        <div id="entregaPedidoInfo" style="text-align: left; width: 100%; margin: 0; padding: 0;"></div>
+
       </div>
       <div id="entregaPedidoItens"></div>
       <div id="entregaPedidoTotal"></div>
@@ -2181,7 +2183,8 @@
         <strong>Pedido:</strong> #${pedidoId}<br>
         <strong>Cliente:</strong> ${pedido.cliente.nome}<br>
         <strong>Telefone:</strong> ${pedido.cliente.telefone}<br>
-        <strong>Endereço:</strong> ${pedido.cliente.endereco || 'Retirada no local'}
+        <strong>Endereço:</strong> ${pedido.cliente.endereco || 'Retirada no local'}<br>
+        <strong>Bairro:</strong> ${pedido.cliente.bairro}<br>
       `;
       
       document.getElementById('entregaPedidoItens').innerHTML = `
