@@ -7,15 +7,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta name="apple-mobile-web-app-capable" content="yes"> <!--melhoram o comportamento como app no iPhone:-->
-<meta name="apple-mobile-web-app-status-bar-style" content="default"> <!--melhoram o comportamento como app no iPhone:-->
 <title>VaptVupt Delivery</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link rel="icon" href="https://i.ibb.co/ccnPx5ym/Chat-GPT-Image-3-de-jun-de-2025-12-21-02-Photoroom.png" type="image/x-icon">
-<link rel="manifest" href="/manifest.json"> <!--CHAMA O ,JSON DO ICONE PARA iOS-->
-<link rel="apple-touch-icon" href="icone.png"> <!--BUSCA O ICONE-->
 <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
 <style>
@@ -688,47 +684,7 @@ function buscarPedidosCliente() {
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const categoriasDiv = document.getElementById('container-produtos');
 
-  firebase.database().ref('produtos').once('value').then(snapshot => {
-    if (snapshot.exists()) {
-      const produtosPorCategoria = snapshot.val();
-
-      for (let categoria in produtosPorCategoria) {
-        const produtos = produtosPorCategoria[categoria];
-        const titulo = categoria.charAt(0).toUpperCase() + categoria.slice(1);
-
-        const divCategoria = document.createElement('div');
-        divCategoria.className = 'categoria';
-        divCategoria.innerHTML = `<h2>${titulo}</h2><div class="row g-3" id="cat-${categoria}"></div>`;
-
-        for (let key in produtos) {
-          const p = produtos[key];
-          const card = document.createElement('div');
-          card.className = 'col-md-4 col-sm-6';
-          card.innerHTML = `
-            <div class="card produto-card">
-              <img class="card-img-top" src="${p.imagem}" alt="${p.nome}">
-              <div class="card-body">
-                <h5 class="card-title">${p.nome}</h5>
-                <span class="price-tag">R$${p.preco.toFixed(2)}</span>
-                <button class="btn btn-add mt-3" onclick="showQuantityPopup('${p.nome}', ${p.preco})">
-                  <i class="fas fa-plus"></i>Adicionar
-                </button>
-              </div>
-            </div>
-          `;
-          divCategoria.querySelector('.row').appendChild(card);
-        }
-
-        categoriasDiv.appendChild(divCategoria);
-      }
-    } else {
-      categoriasDiv.innerHTML = '<p class="text-center mt-5">Nenhum produto cadastrado ainda.</p>';
-    }
-  });
-});
 </script>
 
 <script>
