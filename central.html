@@ -1760,11 +1760,11 @@
         allOrders = [];
         const novosIds = [];
         snapshot.forEach((childSnapshot) => {
-          const pedido = childSnapshot.val();
-          pedido.id = childSnapshot.key;
-          allOrders.push(pedido);
-          novosIds.push(pedido.id);
-        });
+        const pedido = childSnapshot.val();
+        pedido.id = pedido.numeroPedido || childSnapshot.key;
+        allOrders.push(pedido);
+        novosIds.push(pedido.id);
+      });
 
         const novosPedidos = novosIds.filter(id => !pedidosAnteriores.includes(id));
         if (pedidosAnteriores.length > 0 && novosPedidos.length > 0) {
@@ -2087,7 +2087,7 @@
 
         pedidoHTML.innerHTML = `
           <div class="order-header">
-            <span class="order-id">Pedido #${index + 1}</span>
+            <span class="order-id">Pedido #${pedido.id}</span>
             <span class="order-time">${formatDate(pedido.data)}</span>
           </div>
           <div class="order-customer">
