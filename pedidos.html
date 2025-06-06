@@ -12,7 +12,14 @@
 <link rel="icon" href="https://i.ibb.co/ccnPx5ym/Chat-GPT-Image-3-de-jun-de-2025-12-21-02-Photoroom.png" type="image/x-icon">
 <link rel="manifest" href="manifest.json"> 
 <link rel="apple-touch-icon" href="icone.png">
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js">
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('splash-screen').style.display = 'none';
+  }, 3000);
+});
+
+</script>
 <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
 <style>
     :root {
@@ -311,9 +318,72 @@
         height: 180px;
       }
     }
-  </style>
+  
+#splash-screen {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #EA1D2C;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  animation: fadeOut 1s ease-out forwards;
+  animation-delay: 2.8s;
+}
+
+#splash-logo {
+  width: 120px;
+  animation: zoomIn 1.5s ease-out;
+}
+
+#splash-text {
+  color: white;
+  margin-top: 20px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  opacity: 0;
+  animation: fadeInText 1s ease-in-out 1.4s forwards;
+  font-family: 'Poppins', sans-serif;
+}
+
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInText {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+</style>
 </head>
 <body>
+
+<div id="splash-screen">
+  <img src="https://i.ibb.co/ccnPx5ym/Chat-GPT-Image-3-de-jun-de-2025-12-21-02-Photoroom.png" alt="Logo VaptVupt" id="splash-logo">
+  <h2 id="splash-text"><br><small>seu App de Delivery</small></h2>
+</div>
+
 <nav class="navbar navbar-expand-lg navbar-light sticky-top">
 <div class="container">
 <a class="navbar-brand" href="#">
