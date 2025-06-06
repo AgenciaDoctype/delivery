@@ -438,6 +438,7 @@ Quero retirar no local
 <input class="form-control mb-2" id="nomeCliente" placeholder="Seu nome" type="text">
 <input class="form-control mb-2" id="telefoneCliente" placeholder="Telefone" type="tel"/>
 <input class="form-control mb-2" id="enderecoCliente" placeholder="Endereço para entrega" type="text"/>
+<input class="form-control mb-2" id="bairroCliente" placeholder="Bairro" type="text"/>
 <div class="mb-3">
   <label class="form-label fw-bold">Forma de Pagamento:</label>
   <div class="form-check">
@@ -739,9 +740,10 @@ Quero retirar no local
   const nome = document.getElementById('nomeCliente').value.trim();
   const telefone = document.getElementById('telefoneCliente').value.trim();
   const endereco = document.getElementById('enderecoCliente').value.trim();
+  const bairro = document.getElementById('bairroCliente').value.trim();
   const retirada = document.getElementById('retiradaLocal').checked;
 
-  if (!nome || !telefone || (!endereco && !retirada)) {
+  if (!nome || !telefone || (!endereco || !bairro) && !retirada) {
     alert('Por favor, preencha todos os campos obrigatórios.');
     return;
   }
@@ -763,7 +765,8 @@ Quero retirar no local
     cliente: {
       nome,
       telefone,
-      endereco: retirada ? 'Retirada no local' : endereco
+      endereco: retirada ? 'Retirada no local' : endereco,
+      bairro: retirada ? '' : bairro
     },
     itens: itensPedido,
     subtotal,
