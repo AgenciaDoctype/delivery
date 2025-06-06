@@ -1995,11 +1995,11 @@
         allOrders = [];
         const novosIds = [];
         snapshot.forEach((childSnapshot) => {
-          const pedido = childSnapshot.val();
-          pedido.id = childSnapshot.key;
-          allOrders.push(pedido);
-          novosIds.push(pedido.id);
-        });
+        const pedido = childSnapshot.val();
+        pedido.id = pedido.numeroPedido || childSnapshot.key;
+        allOrders.push(pedido);
+        novosIds.push(pedido.id);
+      });
 
         const novosPedidos = novosIds.filter(id => !pedidosAnteriores.includes(id));
         if (pedidosAnteriores.length > 0 && novosPedidos.length > 0) {
