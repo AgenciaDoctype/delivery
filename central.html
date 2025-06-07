@@ -1947,7 +1947,8 @@
         <strong>Pedido:</strong> #${pedidoId}<br>
         <strong>Cliente:</strong> ${pedido.cliente.nome}<br>
         <strong>Telefone:</strong> ${pedido.cliente.telefone}<br>
-        <strong>Endereço:</strong> ${pedido.cliente.endereco || 'Retirada no local'}
+        <strong>Endereço:</strong> ${pedido.cliente.endereco || 'Retirada no local'}<br>
+        <strong>Bairro:</strong> ${pedido.cliente.bairro}<br>
       `;
       
       document.getElementById('entregaPedidoItens').innerHTML = `
